@@ -19,21 +19,18 @@ def test_get_post_by_id(id):
     with patch("main.http_get", return_value=mock_response):
         assert get_post_by_id(id) == {"user_id": id}
 
-@pytest.mark.parametrize("id", [
-    (-1),
-    (5),
-    (99)
-])
-def test_get_post_by_id_with_validation(id):
 
-    mock_response = mock.Mock()
-    mock_response.status_code = 200
-    mock_response.json.return_value = {'userId': id, 'id': id}
-
-    patch("main.http_get", return_value=mock_response)
-    patch("main.http_get", side_effect=HTTPError("HTTP Error"))
-    assert get_post_by_id_with_validation(id) is None
-    with pytest.raises(ValueError, match='post_id > 0'):
+def test_get_post_by_id_with_validation(mocker):
+    # test for success
+    mock_response = mocker.Mock()
+    mock_response.json.return_value = {'id': 1}
+    mocker.patch('main.http_get', return_value=mock_response)
+    assert get_post_by_id_with_validation(1) == {'id': 1}
+    
+    mocker.patch("main.http_get", side_effect=HTTPError("HTTP Error"))
+    assert get_post_by_id_with_validation(1) is None
+   
+    with pytest.raises(ValueError, match='post_id must be greater than 0'):
         get_post_by_id_with_validation(-1)
 
 
