@@ -6,4 +6,4 @@ Install Dependencies:
 pip install pytest
 
 Run the Script:
-python test_main.py 
+pytest 
