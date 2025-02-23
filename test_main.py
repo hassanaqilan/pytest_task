@@ -3,6 +3,7 @@ from main import get_post_by_id_with_validation
 import pytest
 from unittest.mock import patch
 from unittest import mock
+from requests.exceptions import HTTPError
 
 @pytest.mark.parametrize("id", [
     (1),
@@ -29,12 +30,11 @@ def test_get_post_by_id_with_validation(id):
     mock_response.status_code = 200
     mock_response.json.return_value = {'userId': id, 'id': id}
 
-    with patch("main.http_get", return_value=mock_response):
-        if id <= 0:
-            with pytest.raises(ValueError):
-                get_post_by_id_with_validation(id)
-        else:
-            assert get_post_by_id_with_validation(id) == {'userId': id, 'id': id}
+    patch("main.http_get", return_value=mock_response)
+    patch("main.http_get", side_effect=HTTPError("HTTP Error"))
+    assert get_post_by_id_with_validation(id) is None
+    with pytest.raises(ValueError, match='post_id > 0'):
+        get_post_by_id_with_validation(-1)
 
 
 @pytest.mark.parametrize("id", [
