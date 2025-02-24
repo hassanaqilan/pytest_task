@@ -32,3 +32,9 @@ def get_post_by_id_with_validation(post_id: int) -> dict[str, Any] | None:
     except HTTPError:
         return None
 
+
+def fetch_data(url):
+    response = http_get(url)
+    if response.status_code == 200:
+        return response.json()
+    return None
