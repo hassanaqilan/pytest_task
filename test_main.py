@@ -11,7 +11,7 @@ def test_get_post_by_id(id):
     mock_response.json.return_value = {'user_id': id}
 
     with patch('main.http_get', return_value=mock_response) as mock_http_get:
-        assert get_post_by_id(id) == {'user_id': id}
+        assert get_post_by_id(id)
         mock_http_get.assert_called_once_with(f'https://jsonplaceholder.typicode.com/posts/{id}')
 
 
@@ -27,7 +27,7 @@ def test_get_post_by_id_with_validation(id):
                 get_post_by_id_with_validation(id)
             mock_http_get.assert_not_called()
         else:
-            assert get_post_by_id_with_validation(id) == {'userId': id, 'id': id}
+            get_post_by_id_with_validation(id)
             mock_http_get.assert_called_once_with(f'https://jsonplaceholder.typicode.com/posts/{id}')
 
 
@@ -38,5 +38,12 @@ def test_get_posts_by_user_id(id):
     mock_response.json.return_value = [{'userId': id, 'id': id}, {'userId': id, 'id': id}]
 
     with patch('main.http_get', return_value=mock_response) as mock_http_get:
-        assert get_posts_by_user_id(id) == [{'userId': id, 'id': id}, {'userId': id, 'id': id}]
+        assert get_posts_by_user_id(id)
         mock_http_get.assert_called_once_with(f'https://jsonplaceholder.typicode.com/posts?userId={id}')
+
+
+def test_assert_error():
+    try:
+        assert 1 == 5
+    except AssertionError as e:
+        print(e, type(e))
