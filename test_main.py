@@ -1,7 +1,7 @@
 from main import get_post_by_id, get_posts_by_user_id
 from main import get_post_by_id_with_validation
-import pytest
 from unittest.mock import patch, Mock
+import pytest
 
 
 @pytest.mark.parametrize('id', [1, 2, 3])
@@ -12,7 +12,6 @@ def test_get_post_by_id(id):
 
     with patch('main.http_get', return_value=mock_response) as mock_http_get:
         assert get_post_by_id(id) == {'user_id': id}
-
         mock_http_get.assert_called_once_with(f'https://jsonplaceholder.typicode.com/posts/{id}')
 
 
