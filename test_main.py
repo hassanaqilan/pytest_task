@@ -1,7 +1,7 @@
 from unittest.mock import Mock, patch
 
-import pytest  # type: ignore
-from requests.exceptions import HTTPError  # type: ignore
+import pytest
+from requests.exceptions import HTTPError
 
 from main import (get_post_by_id, get_post_by_id_with_validation,
                   get_posts_by_user_id)
@@ -14,7 +14,6 @@ def test_get_post_by_id(id):
     mock_response = Mock()
     mock_response.status_code = 200
     mock_response.json.return_value = {'user_id': id}
-
     with patch('main.http_get', return_value=mock_response) as mock_http_get:
         assert get_post_by_id(id)
         mock_http_get.assert_called_once_with(f'{BASE_URL}/posts/{id}')
